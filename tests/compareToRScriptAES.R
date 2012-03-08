@@ -1,9 +1,10 @@
 library(rngSetSeed)
 
 # Comparison of the output of C-level functions in rngSetSeed
-# with AES implemented in a (very slow) R script prepared using the
-# description at
+# with AES implemented in a (slow) R script below prepared using
+# the description from
 # http://en.wikipedia.org/wiki/Advanced_Encryption_Standard
+# Petr Savicky 2012
 
 # Prepare tables for AES
 
@@ -95,10 +96,10 @@ mix.col <- function(a)
 	c3 <- a[c(3,4,1,2)]
 	c4 <- a[c(2:4,1)]
 	c5 <- mult.x[a[c(2:4,1)]+1]
-	c45 <- xor[cbind(c4+1,c5+1)]
-	c23 <- xor[cbind(c2+1,c3+1)]
-	c123 <- xor[cbind(c1+1,c23+1)]
-	xor[cbind(c123+1,c45+1)]
+	c45 <- xor[cbind(c4,c5) + 1]
+	c23 <- xor[cbind(c2,c3) + 1]
+	c123 <- xor[cbind(c1,c23) + 1]
+	xor[cbind(c123,c45) + 1]
 }
 
 key.schedule <- function(key.len,key)
@@ -123,19 +124,19 @@ key.schedule <- function(key.len,key)
 		t <- sched.core(t,i)
 		i <- i+1
 		s <- key[(curr+1-n):(curr+4-n)]
-		key[(curr+1):(curr+4)] <- xor[cbind(t+1,s+1)]
+		key[(curr+1):(curr+4)] <- xor[cbind(t,s) + 1]
 		curr <- curr+4
 		for (k in 1:3) {
 			t <- key[(curr-3):curr]
 			s <- key[(curr+1-n):(curr+4-n)]
-			key[(curr+1):(curr+4)] <- xor[cbind(t+1,s+1)]
+			key[(curr+1):(curr+4)] <- xor[cbind(t,s) + 1]
 			curr <- curr+4
 		}
 		if (key.len == 256) {
 			t <- key[(curr-3):curr]
 			t <- s.box[t+1]
 			s <- key[(curr+1-n):(curr+4-n)]
-			key[(curr+1):(curr+4)] <- xor[cbind(t+1,s+1)]
+			key[(curr+1):(curr+4)] <- xor[cbind(t, s) + 1]
 			curr <- curr+4
 		}
 		if (key.len == 128) {
@@ -148,7 +149,7 @@ key.schedule <- function(key.len,key)
 		for (k in kk) {
 			t <- key[(curr-3):curr]
 			s <- key[(curr+1-n):(curr+4-n)]
-			key[(curr+1):(curr+4)] <- xor[cbind(t+1,s+1)]
+			key[(curr+1):(curr+4)] <- xor[cbind(t, s) + 1]
 			curr <- curr+4
 		}
 	}
@@ -161,7 +162,7 @@ encrypt <- function(exp.key,input)
 	key <- matrix(exp.key,ncol=16,byrow=TRUE)
 	rounds <- nrow(key)
 	# Initial step
-	input <- xor[cbind(input+1,key[1,]+1)]
+	input <- xor[cbind(input, key[1, ]) + 1]
 	# Cycle
 	for (k in 2:(rounds-1)) {
 		input <- s.box[input+1]
@@ -169,17 +170,20 @@ encrypt <- function(exp.key,input)
 		for (j in 1:4) {
 			input[4*(j-1)+(1:4)] <- mix.col(input[4*(j-1)+(1:4)])
 		}
-		input <- xor[cbind(input+1,key[k,]+1)]
+		input <- xor[cbind(input, key[k, ]) + 1]
 	}
 	# Final round
 	input <- s.box[input+1]
 	input <- input[c(1,6,11,16,5,10,15,4,9,14,3,8,13,2,7,12)]
-	xor[cbind(input+1,key[rounds,]+1)]
+	xor[cbind(input, key[rounds, ]) + 1]
 }
 
-# R script implementation of the algorithm used by C-level
-# functions in setVectorSeed and the comparison between the
-# results of C and R implementation.
+# R script implementation of the algorithm used by C-level functions
+# in getVectorSeed(vseed) and the comparison between the results of
+# C and R implementation.
+
+N <- 624
+NN <- ceiling(N/4)
 
 for (n in c(1, 2, 7, 8, 9, 47, 48)) {
     vseed <- seq.int(from=floor(0.35*n), length.out=n)
@@ -189,11 +193,10 @@ for (n in c(1, 2, 7, 8, 9, 47, 48)) {
     s <- numeric(8*ceiling(length(v)/8))
     s[seq.int(along.with=v)] <- v
     key <- rep(NA, times=32)
-    
-    hashValue <- unname(hexa[c("b7","e1","51","62","8a","ed","2a","6a","bf","71","58","80","9c","f4","f3","c7")])
-
+    plainText <- rep(0, times=16)
+    outBytes <- rep(0, times=16*NN)
     j <- 0
-    for (i in seq.int(along.with=s)) {
+    for (i in seq.int(along.with=s)) { # length(s) is a multiple of 8
         j <- j + 1
         key[j] <- (s[i] %/% 2^24) %% 2^8
         j <- j + 1
@@ -204,23 +207,30 @@ for (n in c(1, 2, 7, 8, 9, 47, 48)) {
         key[j] <- s[i] %% 2^8
         if (j == 32) {
             expandedKey <- key.schedule(256, key)
-            cipher <- encrypt(expandedKey, hashValue)
-            hashValue <- xor[cbind(hashValue + 1, cipher + 1)]
+            u <- (i - 1) %/% 8
+            plainText[1] <- (u %/% 2^24) %% 2^8
+            plainText[2] <- (u %/% 2^16) %% 2^8
+            plainText[3] <- (u %/% 2^8) %% 2^8
+            plainText[4] <-  u %% 2^8
+            k <- 0
+            while (k < length(outBytes)) { # length(outBytes) is a multiple of 16
+                u <- k %/% 16
+                plainText[5] <- (u %/% 2^24) %% 2^8
+                plainText[6] <- (u %/% 2^16) %% 2^8
+                plainText[7] <- (u %/% 2^8) %% 2^8
+                plainText[8] <-  u %% 2^8
+                cipher <- encrypt(expandedKey, plainText)
+                outBytes[k + 1:16] <- xor[cbind(outBytes[k + 1:16], cipher) + 1]
+                k <- k + 16
+            }
             j <- 0
         }
     }
-    expandedKey <- key.schedule(128, hashValue)
-    plainText <- rep(0, times=16)
-    out <- rep(NA, times=624)
-    for (i in seq.int(along.with=out)) {
-        plainText[3] <- ((i - 1) %/% 2^8) %% 2^8
-        plainText[4] <- (i - 1) %% 2^8
-        cipher <- encrypt(expandedKey, plainText)
-        out[i] <- cipher[4]*2^24 + cipher[3]*2^16 + cipher[2]*2^8 + cipher[1]
-    }
+    stopifnot(j == 0)
+    out <- c(rbind(2^c(24, 16, 8, 0)) %*% matrix(outBytes, nrow=4, ncol=4*NN))
+    out <- out[seq.int(length.out=N)]
     out[out >= 2^31] <- out[out >= 2^31] - 2^32
-   
-    OK <- identical(as.integer(out), getVectorSeed(vseed))
+    OK <- identical(as.integer(out), getVectorSeed(vseed, N))
     print(OK)
     stopifnot(OK)
     print(out[1:5])

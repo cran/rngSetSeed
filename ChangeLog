@@ -1,1 +1,4 @@
-rngSetSeed_0.1-2  2012-03-03  Initial submission to CRAN
+rngSetSeed_0.2-3  2012-03-08  cleaning code and documentation
+rngSetSeed_0.2-2  2012-03-06  function getVectorSeed() uses a more efficient algorithm
+                              improved documentation
+rngSetSeed_0.1-2  2012-03-03  initial submission to CRAN
