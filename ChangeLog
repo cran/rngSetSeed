@@ -1,3 +1,8 @@
+rngSetSeed_0.3-1  2014-12-01  title changed according to the requirements of Writing R Extensions
+                              the description is simplified
+                              test scripts modified not to require full double precision
+rngSetSeed_0.3-0  2014-03-14  the function getVectorSeed() renamed to generateInitialization()
+                              improved documentation
 rngSetSeed_0.2-3  2012-03-08  cleaning code and documentation
 rngSetSeed_0.2-2  2012-03-06  function getVectorSeed() uses a more efficient algorithm
                               improved documentation

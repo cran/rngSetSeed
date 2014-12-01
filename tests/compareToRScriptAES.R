@@ -179,7 +179,7 @@ encrypt <- function(exp.key,input)
 }
 
 # R script implementation of the algorithm used by C-level functions
-# in getVectorSeed(vseed) and the comparison between the results of
+# in generateInitialization(vseed) and the comparison between the results of
 # C and R implementation.
 
 N <- 624
@@ -230,7 +230,7 @@ for (n in c(1, 2, 7, 8, 9, 47, 48)) {
     out <- c(rbind(2^c(24, 16, 8, 0)) %*% matrix(outBytes, nrow=4, ncol=4*NN))
     out <- out[seq.int(length.out=N)]
     out[out >= 2^31] <- out[out >= 2^31] - 2^32
-    OK <- identical(as.integer(out), getVectorSeed(vseed, N))
+    OK <- identical(as.integer(out), generateInitialization(vseed, N))
     print(OK)
     stopifnot(OK)
     print(out[1:5])

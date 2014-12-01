@@ -10,7 +10,7 @@
   interpreted as 32-bit integers. In order to guarantee that different input
   vectors yield unrelated streams of random numbers, Fortuna random number
   generator using Advanced Encryption Standard (AES) is used for the transformation
-  of \code{vseed} to the initial state of Mersenne-Twister. See \link{getVectorSeed}
+  of \code{vseed} to the initial state of Mersenne-Twister. See \link{generateInitialization}
   for more detail of the algorithm.
 }
 \usage{
@@ -21,15 +21,15 @@
 }
 \details{
   The function calls \code{RNGkind("Mersenne-Twister")} and then replaces
-  its state with \code{getVectorSeed(vseed)} as an initial state.
-  See \code{\link{getVectorSeed}} for the description of the algorithm
+  its state with \code{generateInitialization(vseed)} as an initial state.
+  See \code{\link{generateInitialization}} for the description of the algorithm
   computing the initialization of length 624 from \code{vseed}.
 }
 \value{
   \code{NULL} invisibly.
 }
 \seealso{
-  \code{\link{getVectorSeed}}.
+  \code{\link{generateInitialization}}.
 }
 \examples{
   setVectorSeed(1)

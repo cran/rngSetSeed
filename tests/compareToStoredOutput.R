@@ -13,20 +13,20 @@ x3 <- c(
   0.94645602838136255741, 0.77209695545025169849, 0.89415965671651065350)
 
 setVectorSeed(1:50)
-stopifnot(x1 == runif(6))
+stopifnot(abs(x1 - runif(6)) < 1e-10)
 
 setVectorSeed(c(1:50, 0))
-stopifnot(x2 == runif(6))
+stopifnot(abs(x2 - runif(6)) < 1e-10)
 
 setVectorSeed(c(1:50, 1))
-stopifnot(x3 == runif(6))
+stopifnot(abs(x3 - runif(6)) < 1e-10)
 
 setVectorSeed(1:50)
-stopifnot(x1 == runif(6))
+stopifnot(abs(x1 - runif(6)) < 1e-10)
 
 setVectorSeed(c(1:50, 0))
-stopifnot(x2 == runif(6))
+stopifnot(abs(x2 - runif(6)) < 1e-10)
 
 setVectorSeed(c(1:50, 1))
-stopifnot(x3 == runif(6))
+stopifnot(abs(x3 - runif(6)) < 1e-10)
 

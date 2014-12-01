@@ -34,6 +34,6 @@
 
 \seealso{
   \code{\link{setVectorSeed}},
-  \code{\link{getVectorSeed}}.
+  \code{\link{generateInitialization}}.
 }
 
