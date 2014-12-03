@@ -1,7 +1,7 @@
 \name{generateInitialization}
 \alias{generateInitialization}
 \title{
-  Generates a random integer vector of a specified length using AES.
+  Generates a random integer vector of a specified length using AES
 }
 \description{
   In a typical application of the package, this function is not called
@@ -39,16 +39,13 @@
   a 32-bit integer in an endianness independent way. The first \code{m} of the
   obtained integers form the output.
 
-  If \code{length(vseed) <= 7}, then the above algorithm is known as Fortuna random
-  number generator using AES as described at
+  If \code{length(vseed) <= 7}, then the above algorithm uses AES in counter
+  mode suggested in Fortuna random number generator as described at
   \url{http://en.wikipedia.org/wiki/Fortuna_(PRNG)} with a key specified
   by the user.
   If \code{length(vseed) >= 8}, the algorithm uses XOR of the outputs
   of several Fortuna generators with keys formed from disjoint parts of
   the input vector and disjoint counter sequences.
-
-  If \code{m1 < m2}, then \code{generateInitialization(vseed, m1)} is equal
-  to the first \code{m1} components of \code{generateInitialization(vseed, m2)}.
 }
 \value{
   Vector of length \code{m} of integer type suitable for substituting into 
@@ -57,6 +54,9 @@
   which represents \code{-2^31}. If \code{m == 624}, the output vector is
   suitable as the initial state of Mersenne-Twister to be copied into
   \code{.Random.seed[3:626]}. 
+
+  If \code{m1 < m2}, then \code{generateInitialization(vseed, m1)} is equal
+  to the first \code{m1} components of \code{generateInitialization(vseed, m2)}.
 }
 \references{
   \url{http://en.wikipedia.org/wiki/Advanced_Encryption_Standard},
@@ -66,9 +66,11 @@
   \code{\link{setVectorSeed}}
 }
 \examples{
-  generateInitialization(0, 3) == c(1418754292, -1328910215, -1268802982)
-  generateInitialization(c(0, 1), 3) == c(1456767579, 1606355844, -1560283904)
-  generateInitialization(c(0, 1, 2), 3) == c(-1265102184, -974528510, 163341403)
-  generateInitialization(c(0, 1, 2), 3) == generateInitialization(c(0, 1, 2), 33)[1:3]
+  s1 <- generateInitialization(1, 3)
+  s2 <- generateInitialization(c(1, 0), 3)
+  s3 <- generateInitialization(c(1, 0, 0), 3)
+  stopifnot(s1 == c(2054882070, -83320660, -37036705))
+  stopifnot(s2 == c(-1435341980, 1760892082, 970206446))
+  stopifnot(s3 == c(1941187208, 915534877, -365000103))
 }
 

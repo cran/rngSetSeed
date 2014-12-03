@@ -10,7 +10,7 @@
 /* output.                                                                            */
 /* The code in this file calls functions from Advanced Encryption Standard            */
 /* implementation by Christophe Devine. See "aes.c" for the copyright information.    */
-/* Petr Savicky 2012                                                                  */
+/* Petr Savicky 2012, 2014                                                            */
 /**************************************************************************************/
 
 #include "aes.h"
@@ -22,7 +22,7 @@ static unsigned char key[32];
 static unsigned char plaintext[16];
 static unsigned char cipher[16];
 
-void getVectorSeed(int *n, double *x, int *m, unsigned int *y)
+void getVectorSeed(int *n, double *s, int *m, unsigned int *y)
 {
     int i, j, k;
     unsigned int u;
@@ -34,7 +34,7 @@ void getVectorSeed(int *n, double *x, int *m, unsigned int *y)
     }
     j = 0;
     for (i = 0; i < *n; i++) { // *n is a multiple of 8 from R
-        u = (unsigned int) x[i];
+        u = (unsigned int) s[i];
         key[j++] = (unsigned char) (u >> 24);
         key[j++] = (unsigned char) (u >> 16);
         key[j++] = (unsigned char) (u >>  8);
@@ -55,10 +55,22 @@ void getVectorSeed(int *n, double *x, int *m, unsigned int *y)
                 aes_encrypt(ctx, plaintext, cipher);
                 // y[] is initially all 0s from R
                 // combine the bytes of cipher to integers in an endianness independent way
-                y[k++] ^= (cipher[ 0] << 24) | (cipher[ 1] << 16) | (cipher[ 2] << 8) | (cipher[ 3]);
-                y[k++] ^= (cipher[ 4] << 24) | (cipher[ 5] << 16) | (cipher[ 6] << 8) | (cipher[ 7]);
-                y[k++] ^= (cipher[ 8] << 24) | (cipher[ 9] << 16) | (cipher[10] << 8) | (cipher[11]);
-                y[k++] ^= (cipher[12] << 24) | (cipher[13] << 16) | (cipher[14] << 8) | (cipher[15]);
+                y[k++] ^= ((unsigned int) cipher[ 0] << 24) |
+                          ((unsigned int) cipher[ 1] << 16) |
+                          ((unsigned int) cipher[ 2] <<  8) |
+                          ((unsigned int) cipher[ 3]);
+                y[k++] ^= ((unsigned int) cipher[ 4] << 24) |
+                          ((unsigned int) cipher[ 5] << 16) |
+                          ((unsigned int) cipher[ 6] <<  8) |
+                          ((unsigned int) cipher[ 7]);
+                y[k++] ^= ((unsigned int) cipher[ 8] << 24) |
+                          ((unsigned int) cipher[ 9] << 16) |
+                          ((unsigned int) cipher[10] <<  8) |
+                          ((unsigned int) cipher[11]);
+                y[k++] ^= ((unsigned int) cipher[12] << 24) |
+                          ((unsigned int) cipher[13] << 16) |
+                          ((unsigned int) cipher[14] <<  8) |
+                          ((unsigned int) cipher[15]);
             }
             j = 0;
         }
