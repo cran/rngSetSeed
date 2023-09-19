@@ -1,10 +1,10 @@
 fe5a527bfaeb5ff307b1fc5d023926e8 *ChangeLog
-1bf87718205038b5e92e2b0d182fd3fc *DESCRIPTION
+91842838380e07def1bdec9b1d12ef7c *DESCRIPTION
 3d8dedfb89d0aaca04630ac9bbc5a77f *NAMESPACE
 c15c029acd9851993e6496749cda2239 *R/functions.R
 ef8a9f267a7de4bfa23a8e32972114c9 *R/init.R
-eb8138da761936b7989988cfde91ac1d *man/generateInitialization.Rd
-d5f822ccd63cd5487bccf8d0af5d427e *man/rngSetSeed-package.Rd
+64dc6f0d2728ad56fa6ddd939f18fe30 *man/generateInitialization.Rd
+6dfbe12a08a5954c136409545d276b26 *man/rngSetSeed-package.Rd
 05bc566a3c55127eeb8d04864f28b88b *man/setVectorSeed.Rd
 bdcbeb9c3539f240d9a5eaa7f9c88b08 *src/aes.c
 12398d282dd19894ed5548fc55fff7c4 *src/aes.h

@@ -1,8 +1,8 @@
 Package: rngSetSeed
 Type: Package
 Title: Seeding the Default RNG with a Numeric Vector
-Version: 0.3-2
-Date: 2014-12-03
+Version: 0.3-3
+Date: 2023-09-18
 Author: Petr Savicky
 Maintainer: Petr Savicky <savicky@cs.cas.cz>
 Description: A function setVectorSeed() is provided. Its argument
@@ -16,7 +16,7 @@ Description: A function setVectorSeed() is provided. Its argument
         with a vector is a convenient way to obtain several streams,
         each of which is identified by several integer indices.
 License: GPL-3
-Packaged: 2014-12-03 08:04:05 UTC; petr
+Packaged: 2023-09-19 07:45:58 UTC; petr
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2014-12-03 10:28:01
+Date/Publication: 2023-09-19 08:50:02 UTC

@@ -41,7 +41,7 @@
 
   If \code{length(vseed) <= 7}, then the above algorithm uses AES in counter
   mode suggested in Fortuna random number generator as described at
-  \url{http://en.wikipedia.org/wiki/Fortuna_(PRNG)} with a key specified
+  \url{https://en.wikipedia.org/wiki/Fortuna_(PRNG)} with a key specified
   by the user.
   If \code{length(vseed) >= 8}, the algorithm uses XOR of the outputs
   of several Fortuna generators with keys formed from disjoint parts of
@@ -59,8 +59,8 @@
   to the first \code{m1} components of \code{generateInitialization(vseed, m2)}.
 }
 \references{
-  \url{http://en.wikipedia.org/wiki/Advanced_Encryption_Standard},
-  \url{http://en.wikipedia.org/wiki/Fortuna_(PRNG)}.
+  \url{https://en.wikipedia.org/wiki/Advanced_Encryption_Standard},
+  \url{https://en.wikipedia.org/wiki/Fortuna_(PRNG)}.
 }
 \seealso{
   \code{\link{setVectorSeed}}

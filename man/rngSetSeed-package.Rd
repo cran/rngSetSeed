@@ -1,4 +1,5 @@
 \name{rngSetSeed-package}
+\alias{rngSetSeed-package}
 \alias{rngSetSeed}
 \concept{set.seed}
 \docType{package}
